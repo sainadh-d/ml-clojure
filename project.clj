@@ -5,6 +5,7 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [nrepl "1.1.0-alpha1"]
+                 [org.clojars.davidpham87/plotly-pyclj "0.1.8"]
                  [org.tribuo/tribuo-all "4.2.1" :extension "pom" :scope "provided"]]
   :main ^:skip-aot ml-clojure.core
   :target-path "target/%s"
