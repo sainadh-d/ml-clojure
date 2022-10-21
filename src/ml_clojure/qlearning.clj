@@ -9,9 +9,9 @@
    :gamma 0.99})
 
 (defn create-maze [size]
-  (let [agent [0 0]
-        goal  [(- size 1) (- size 1)]]
-    {:agent     [0 0]
+  (let [agent [(rand-int size) (rand-int size)]
+        goal  [(rand-int size) (rand-int size)]]
+    {:agent     agent
      :obstacles (into #{}
                   (for [x (range size)
                         y (range size)
@@ -93,20 +93,20 @@
 (defn qmatrix [n-states n-actions]
   (make-array Float/TYPE n-states n-actions))
 
-(defn update-qmatrix [q st at rt st-1]
+(defn update-qmatrix [^"[[F" q st at rt st-1]
   (let [current   (aget q st at)
         alpha     (:alpha q-params)
         gamma     (:gamma q-params)
         max-st-1  (apply max (aget q st-1))
-        new-val (+ current (* alpha (+ rt (* -1 current) (* gamma max-st-1))))]
+        new-val   (+ current (* alpha (+ rt (* -1 current) (* gamma max-st-1))))]
     (aset-float q st at new-val)))
 
 
-(defn get-best-move [agent-loc q st]
+(defn get-best-move [agent-loc ^"[[F" q st]
   (let [all_moves        (moves agent-loc)
         ; best direction is the one which has max weightage
         best-dir-id      (first (apply max-key second (map-indexed vector (aget q st)))) 
-        best-dir         (case best-dir-id
+        best-dir         (case (int best-dir-id)
                            0 :up
                            1 :down
                            2 :right
@@ -186,9 +186,14 @@
           (visualize-maze maze))))))
 
 (comment
+  (do
+    (set! *warn-on-reflection* true)
+    (require 'ml-clojure.qlearning :reload))
   (plot/init!)
+
   (contains? #{3 5} 0)
   (-main)
+  (+ 1 1)
   ,)
   
    
