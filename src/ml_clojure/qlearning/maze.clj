@@ -1,12 +1,9 @@
-(ns ml-clojure.qlearning
+(ns ml-clojure.qlearning.maze
   (:require 
     [ml-clojure.utils.plot :as plot]
+    [ml-clojure.qlearning.qlearning :as ql]
     [clojure.pprint :as pprint]))
-            
 
-(def q-params 
-  {:alpha 0.1
-   :gamma 0.99})
 
 (defn create-maze [size]
   (let [agent [(rand-int size) (rand-int size)]
@@ -90,18 +87,6 @@
       (< y size)
       (not (contains? obstacles move)))))
 
-(defn qmatrix [n-states n-actions]
-  (make-array Float/TYPE n-states n-actions))
-
-(defn update-qmatrix [^"[[F" q st at rt st-1]
-  (let [current   (aget q st at)
-        alpha     (:alpha q-params)
-        gamma     (:gamma q-params)
-        max-st-1  (apply max (aget q st-1))
-        new-val   (+ current (* alpha (+ rt (* -1 current) (* gamma max-st-1))))]
-    (aset-float q st at new-val)))
-
-
 (defn get-best-move [agent-loc ^"[[F" q st]
   (let [all_moves        (moves agent-loc)
         ; best direction is the one which has max weightage
@@ -116,7 +101,7 @@
 
 (defn learn [start-maze]
   (let [size        (:size start-maze)
-        q           (qmatrix (* size size) 4)]
+        q           (ql/qmatrix (* size size) 4)]
     (doseq [i    (range 500)
             :let [n-steps (atom 0)]]
       (loop [maze start-maze]
@@ -140,7 +125,7 @@
                 st-1             (get-loc size next-move)
                 rt               (if (= (:goal maze) next-move) 10 -0.1)]
             ;; update q-matrix
-            (update-qmatrix q st at rt st-1)
+            (ql/update-qmatrix q st at rt st-1)
             ;; update steps
             (swap! n-steps inc)
             ;; recur with new move
@@ -163,7 +148,7 @@
      
 
 (defn -main []
-  (let [size        20
+  (let [size        16
         start-maze  (get-reachable-maze size)
         q           (learn start-maze)]
     (println "Printing Q matrix")
