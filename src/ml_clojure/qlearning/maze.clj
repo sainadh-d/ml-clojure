@@ -51,8 +51,8 @@
         obstacle-shapes (for [obstacle obstacles]
                           (get-plotly-shape :obstacle size obstacle))
         shapes          (apply conj [agent-shape goal-shape] obstacle-shapes)]
-    (plot/plot! {:data [{:x [] :y []}]
-                 :type :scatter
+    (plot/plot! {:data   [{:x [] :y []}]
+                 :type   :scatter
                  :layout {:xaxis  {:range [0 (:size maze)]
                                    :tickmode "linear"
                                    :tick0    0
@@ -124,11 +124,11 @@
                                    :left  3)
                 st-1             (get-loc size next-move)
                 rt               (if (= (:goal maze) next-move) 10 -0.1)]
-            ;; update q-matrix
+            ; update q-matrix
             (ql/update-qmatrix q st at rt st-1)
-            ;; update steps
+            ; update steps
             (swap! n-steps inc)
-            ;; recur with new move
+            ; recur with new move
             (recur (assoc maze :agent next-move)))))
       (println "Finished iteration: " i "in steps: " @n-steps))
     q))
@@ -154,7 +154,8 @@
     (println "Printing Q matrix")
     (doseq [row q]
       (pprint/pprint row))
-    ;; Now lets visualize the path using Q matrix
+    
+    ; Now lets visualize the path using Q matrix
     (loop [maze start-maze]
       (if (not (won? maze))
         (do

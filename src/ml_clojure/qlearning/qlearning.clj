@@ -3,7 +3,7 @@
     
 (def q-params 
   {:alpha 0.1
-   :gamma 0.99})
+   :gamma 1})
 
 (defn qmatrix [n-states n-actions]
   (make-array Float/TYPE n-states n-actions))
